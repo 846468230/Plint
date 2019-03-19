@@ -1,6 +1,6 @@
 from cryptography.x509.oid import ExtensionOID,ExtendedKeyUsageOID
 from cryptography.x509 import ExtensionNotFound
-from cryptography.exceptions import InvalidSignature
+from cryptography.exceptions import InvalidSignature,UnsupportedAlgorithm
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.asymmetric import rsa,dsa,ec
 def  IsServerAuthCert(cert):
@@ -29,7 +29,9 @@ def IsSelfSigned(cert):
             return False
     except InvalidSignature:
         return False
-
+    except UnsupportedAlgorithm:
+        return False
+        
 def IsSubscriberCert(cert):
     return not IsCACert(cert) and not IsSelfSigned(cert)
 

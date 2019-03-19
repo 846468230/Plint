@@ -33,7 +33,8 @@ class DNSNameLeftLabelWildcardCheck(base.LintInterface):
             return base.LintResult(base.LintStatus.Pass)
         except ValueError:
             return  base.LintResult(base.LintStatus.Fatal)
-            
+        except x509.ExtensionNotFound:
+            return  base.LintResult(base.LintStatus.NA)
 
 
 def init():
