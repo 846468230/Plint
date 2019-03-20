@@ -26,7 +26,6 @@ class dnsNameContainsBareIANASuffix(base.LintInterface):
             return base.LintResult(base.LintStatus.Pass)
         except ValueError:
             return  base.LintResult(base.LintStatus.Fatal)
-            
 
 
 def init():
