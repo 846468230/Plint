@@ -13,6 +13,9 @@ def  IsServerAuthCert(cert):
             return True
     return False
 
+def IsRootCA(c):
+    return IsCACert(c) and IsSelfSigned(c)
+
 def IsSelfSigned(cert):
     key = cert.public_key()
     try:
