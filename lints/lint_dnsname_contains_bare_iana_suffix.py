@@ -26,7 +26,9 @@ class dnsNameContainsBareIANASuffix(base.LintInterface):
             return base.LintResult(base.LintStatus.Pass)
         except ValueError:
             return  base.LintResult(base.LintStatus.Fatal)
-
-
+        except x509.ExtensionNotFound as e:
+            if str(e) == "No <ObjectIdentifier(oid=2.5.29.17, name=subjectAltName)> extension was found":
+                return base.LintResult(base.LintStatus.Pass)
+            
 def init():
     base.RegisterLint(base.Lint("e_dnsname_contains_bare_iana_suffix","DNSNames should not contain a bare IANA suffix.","BRs: 7.1.4.2",base.LintSource.CABFBaselineRequirements,Time.CABEffectiveDate,dnsNameContainsBareIANASuffix()))

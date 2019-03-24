@@ -33,7 +33,9 @@ class DNSNameLabelLengthTooLong(base.LintInterface):
             return base.LintResult(base.LintStatus.Pass)
         except ValueError:
             return  base.LintResult(base.LintStatus.Fatal)
-           
+        except x509.ExtensionNotFound as e:
+            if str(e) == "No <ObjectIdentifier(oid=2.5.29.17, name=subjectAltName)> extension was found":
+                return base.LintResult(base.LintStatus.Pass)  
 
 
 def init():

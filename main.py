@@ -54,8 +54,14 @@ def lint(file,formatprint):
         cert=x509.load_pem_x509_certificate(f.read(),default_backend())
     elif formatprint == "der":
         cert=x509.load_der_x509_certificate(f.read(),default_backend())
+    #try:
     zlintResult=zlint.LintCertificate(cert)
     print(json.dumps(zlintResult,indent =4,separators=(',', ': '),ensure_ascii=True,default=zlint.ResultSet.Tojson))
+    #except ValueError as e:
+    #    print("sorry fatal error occured in the certificate!")
+    #    print(f"the error message is : {str(e)} .")
+    #    print("please try another one!")
+    
 
 if __name__ == '__main__':
     currentdir = os.path.dirname(os.path.realpath(__file__))
