@@ -29,11 +29,13 @@ class CertExtensionsVersonNot3(base.LintInterface):
         return True
     
     def Execute(self,c):
-        if c.version !=x509.Version.v3 and len(c.extensions) !=0 :
-            return  base.LintResult(base.LintStatus.Error)
-        else:
-            return  base.LintResult(base.LintStatus.Pass)
-            
+        try:
+            if c.version !=x509.Version.v3 and len(c.extensions) !=0 :
+                return  base.LintResult(base.LintStatus.Error)
+            else:
+                return  base.LintResult(base.LintStatus.Pass)
+        except ValueError:
+            return  base.LintResult(base.LintStatus.Fatal)
 
 
 def init():

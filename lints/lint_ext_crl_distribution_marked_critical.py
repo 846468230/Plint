@@ -22,6 +22,7 @@ class ExtCrlDistributionMarkedCritical(base.LintInterface):
                 return  base.LintResult(base.LintStatus.Pass)
         except x509.ExtensionNotFound:
             return  base.LintResult(base.LintStatus.NA)
-
+        except ValueError:
+            return  base.LintResult(base.LintStatus.Fatal)
 def init():
     base.RegisterLint(base.Lint("w_ext_crl_distribution_marked_critical","If included, the CRL Distribution Points extension SHOULD NOT be marked critical","RFC 5280: 4.2.1.13",base.LintSource.RFC5280,Time.RFC2459Date,ExtCrlDistributionMarkedCritical()))
