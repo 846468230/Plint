@@ -11,7 +11,13 @@ def CommonNameIsIP(cert):
     return True
 
 def DNSNamesExist(cert):
-    if not len(cert.subject.get_attributes_for_oid(NameOID.COMMON_NAME)) and not len(cert.extensions.get_extension_for_oid(ExtensionOID.SUBJECT_ALTERNATIVE_NAME).value.get_values_for_type(x509.DNSName)):
-        return False
+    if not len(cert.subject.get_attributes_for_oid(NameOID.COMMON_NAME)):
+        try: 
+            if not len(cert.extensions.get_extension_for_oid(ExtensionOID.SUBJECT_ALTERNATIVE_NAME).value.get_values_for_type(x509.DNSName)):
+                return False
+            else:
+                return True
+        except x509.ExtensionNotFound:
+            return False
     else:
         return True
