@@ -9,6 +9,11 @@ def CommonNameIsIP(cert):
         except ValueError:
             return False
     return True
+# is the combine with the romve and determine 
+def isRedactedCertificate(domain):
+    if domain.value =="":
+        return False
+    return  "?." in domain.value[:4]
 
 def DNSNamesExist(cert):
     if not len(cert.subject.get_attributes_for_oid(NameOID.COMMON_NAME)):

@@ -38,6 +38,8 @@ def IsSelfSigned(cert):
 def IsSubscriberCert(cert):
     return not IsCACert(cert) and not IsSelfSigned(cert)
 
+def IsSubCA(cert):
+    return IsCACert(cert) and not IsSelfSigned(cert)
 
 def IsExtInCert(cert, oid):
     try:
