@@ -3,6 +3,7 @@ from cryptography.x509 import ExtensionNotFound
 from cryptography.exceptions import InvalidSignature,UnsupportedAlgorithm
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives.asymmetric import rsa,dsa,ec
+
 def  IsServerAuthCert(cert):
     try:
         extKeyUsages=cert.extensions.get_extension_for_oid(ExtensionOID.EXTENDED_KEY_USAGE)
@@ -26,7 +27,7 @@ def IsSelfSigned(cert):
             key.verify(cert.signature,cert.tbs_certificate_bytes,cert.signature_hash_algorithm)
             return True
         elif isinstance(key, ec.EllipticCurvePublicKey):
-            key.verify(cert.signature,cert.tbs_certificate_bytes,cert.signature_hash_algorithm)
+            key.verify(cert.signature,cert.tbs_certificate_bytes,ec.ECDSA(cert.signature_hash_algorithm))
             return True
         else:
             return False
