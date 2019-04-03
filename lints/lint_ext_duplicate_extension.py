@@ -12,8 +12,10 @@ class ExtDuplicateExtension(base.LintInterface):
         return 0
     
     def CheckApplies(self,c):
-        return c.version==x509.Version.v3
-
+        try:
+            return c.version==x509.Version.v3
+        except x509.InvalidVersion:
+            return False
     def Execute(self,c):
         try:
             extensions=[]

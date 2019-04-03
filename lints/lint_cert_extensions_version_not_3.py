@@ -34,6 +34,11 @@ class CertExtensionsVersonNot3(base.LintInterface):
                 return  base.LintResult(base.LintStatus.Error)
             else:
                 return  base.LintResult(base.LintStatus.Pass)
+        except x509.InvalidVersion:
+            if len(c.extensions) !=0:
+                return  base.LintResult(base.LintStatus.Error)
+            else:
+                return  base.LintResult(base.LintStatus.Pass)
         except ValueError:
             return  base.LintResult(base.LintStatus.Fatal)
 
