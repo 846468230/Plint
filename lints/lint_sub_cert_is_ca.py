@@ -11,11 +11,14 @@ class subCertNotCA(base.LintInterface):
         return 0
     
     def CheckApplies(self,c):
-        if ca.IsExtInCert(c,ExtensionOID.KEY_USAGE):
-            KeyUsage = c.extensions.get_extension_for_oid(ExtensionOID.KEY_USAGE).value
-            if not KeyUsage.key_cert_sign and ca.IsExtInCert(c,ExtensionOID.BASIC_CONSTRAINTS):
-                return True
-        return False
+        try:
+            if ca.IsExtInCert(c,ExtensionOID.KEY_USAGE):
+                KeyUsage = c.extensions.get_extension_for_oid(ExtensionOID.KEY_USAGE).value
+                if not KeyUsage.key_cert_sign and ca.IsExtInCert(c,ExtensionOID.BASIC_CONSTRAINTS):
+                    return True
+            return False
+        except ValueError:
+            return True
 
     def Execute(self,c):
         try:

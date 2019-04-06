@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime,timedelta
 
 class Time:
     ZeroDate                   = datetime(1, 1, 1, 0, 0, 0,0)
@@ -29,3 +29,6 @@ class Time:
     SubCert39Month             = datetime(2016, 7, 2, 0, 0, 0, 0)
     SubCert825Days             = datetime(2018, 3, 2, 0, 0, 0, 0)
     CABV148Date                = datetime(2017, 6, 8, 0, 0, 0, 0)
+
+def addMonths(date,months):
+    return date + timedelta(days=months*30)
