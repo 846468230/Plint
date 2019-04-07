@@ -54,13 +54,13 @@ def lint(file,formatprint):
         cert=x509.load_pem_x509_certificate(f.read(),default_backend())
     elif formatprint == "der":
         cert=x509.load_der_x509_certificate(f.read(),default_backend())
-    #try:
-    zlintResult=zlint.LintCertificate(cert)
-    print(json.dumps(zlintResult,indent =4,separators=(',', ': '),ensure_ascii=True,default=zlint.ResultSet.Tojson))
-    #except ValueError as e:
-    #    print("sorry fatal error occured in the certificate!")
-    #    print(f"the error message is : {str(e)} .")
-    #    print("please try another one!")
+    try:
+        zlintResult=zlint.LintCertificate(cert)
+        print(json.dumps(zlintResult,indent =4,separators=(',', ': '),ensure_ascii=True,default=zlint.ResultSet.Tojson))
+    except ValueError as e:
+        print("sorry fatal error occured in the certificate!")
+        print(f"the error message is : {str(e)} .")
+        print("please try another one!")
     
 
 if __name__ == '__main__':
@@ -87,18 +87,19 @@ if __name__ == '__main__':
         for name in names:
             print(f'   \"{ name }\":LintBool(),')
         print("})")
+        print(f"There are {len(base.Lints)} rules in total.")
         sys.exit(0)
-    
+
     if formatprint:
         flag = True
         while flag:
             filepath = input("please input the filepath which you want to test，and end with enter 0.\n")
             if filepath=="0":
                 break
-            #try:
-            with open(filepath,"rb") as f:  #本来是try下面的缩进块 但是得等开发完之后 加上try
-                lint(f,formatprint)
-            #except:
-            #    print("sorry, cant't load the file! please enter the right path again!")
+            try:
+                with open(filepath,"rb") as f:  #本来是try下面的缩进块 但是得等开发完之后 加上try
+                    lint(f,formatprint)
+            except:
+                print("sorry, cant't load the file! please enter the right path again!")
 
 

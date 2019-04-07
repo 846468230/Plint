@@ -14,7 +14,7 @@ class caIsCA(base.LintInterface):
 
     def CheckApplies(self,c):
         try:
-            return ca.IsExtInCert(c,ExtensionOID.KEY_USAGE) and c.extensions.get_extension_for_oid(ExtensionOID.KEY_USAGE).value.digital_signature and ca.IsExtInCert(c,ExtensionOID.BASIC_CONSTRAINTS)
+            return ca.IsExtInCert(c,ExtensionOID.KEY_USAGE) and c.extensions.get_extension_for_oid(ExtensionOID.KEY_USAGE).value.key_cert_sign and ca.IsExtInCert(c,ExtensionOID.BASIC_CONSTRAINTS)
         except:
             return True
 
