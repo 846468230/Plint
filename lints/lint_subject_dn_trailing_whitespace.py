@@ -12,7 +12,7 @@ the subject field, MUST contain information that has been verified by the CA. Me
 space) characters, and/or any other indication that the value is absent, incomplete, or not applicable, SHALL NOT
 be used.
 '''
-class SubjectDNLeadingSpace(base.LintInterface):
+class SubjectDNTrailingSpace(base.LintInterface):
 
     def Initialize(self):
         return 0
@@ -23,7 +23,7 @@ class SubjectDNLeadingSpace(base.LintInterface):
     def Execute(self,c):
         try:
             for commonName in c.subject:
-                if commonName.value[0]==" " :
+                if commonName.value[-1]==" ":
                     return base.LintResult(base.LintStatus.Warn)
             return base.LintResult(base.LintStatus.Pass)
         except x509.ExtensionNotFound:
@@ -33,4 +33,4 @@ class SubjectDNLeadingSpace(base.LintInterface):
 
 
 def init():
-    base.RegisterLint(base.Lint("w_subject_dn_leading_whitespace","AttributeValue in subject RelativeDistinguishedName sequence SHOULD NOT have leading whitespace","AWSLabs certlint",base.LintSource.AWSLabs,Time.ZeroDate,SubjectDNLeadingSpace()))
+    base.RegisterLint(base.Lint("w_subject_dn_trailing_whitespace","AttributeValue in subject RelativeDistinguishedName sequence SHOULD NOT have trailing whitespace","AWSLabs certlint",base.LintSource.AWSLabs,Time.ZeroDate,SubjectDNTrailingSpace()))
