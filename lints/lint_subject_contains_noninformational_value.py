@@ -22,9 +22,6 @@ class illegalChar(base.LintInterface):
 
     def Execute(self,c):
         try:
-            for commonName in c.subject.get_attributes_for_oid(NameOID.ORGANIZATIONAL_UNIT_NAME):
-                if '.' in  commonName.value or '-' in commonName.value or " " in commonName.value:
-                    return base.LintResult(base.LintStatus.Error)
             for commonName in c.subject.get_attributes_for_oid(NameOID.SERIAL_NUMBER):
                 if '.' in  commonName.value or '-' in commonName.value or " " in commonName.value:
                     return base.LintResult(base.LintStatus.Error)

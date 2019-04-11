@@ -26,25 +26,11 @@ class extSANNotCritNoSubject(base.LintInterface):
 
     def Execute(self,c):
         try:
-            if not c.subject:
-                try:
-                    SANs = c.extensions.get_extension_for_oid(ExtensionOID.SUBJECT_ALTERNATIVE_NAME)
-                except x509.ExtensionNotFound:
+            SANs = c.extensions.get_extension_for_oid(ExtensionOID.SUBJECT_ALTERNATIVE_NAME)
+            if not SANs.critical:
+                if not c.subject:
                     return base.LintResult(base.LintStatus.Error)
-                if SANs.critical:
-                    return base.LintResult(base.LintStatus.Pass)
-                else:
-                    return base.LintResult(base.LintStatus.Error)
-            for attribute in c.subject:
-                if len(attribute.value):
-                    try:
-                        SANs = c.extensions.get_extension_for_oid(ExtensionOID.SUBJECT_ALTERNATIVE_NAME)
-                    except x509.ExtensionNotFound:
-                        return base.LintResult(base.LintStatus.Error)
-                    if SANs.critical:
-                        return base.LintResult(base.LintStatus.Pass)
-                    else:
-                        return base.LintResult(base.LintStatus.Error)
+                
             return base.LintResult(base.LintStatus.Pass)
         except x509.ExtensionNotFound:
             return  base.LintResult(base.LintStatus.NA)
