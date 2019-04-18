@@ -15,7 +15,7 @@ class TestCertPolicyError(unittest.TestCase):
         lint_ext_cert_policy_error.init()
         with open(certPath, "rb") as f:
             cert = x509.load_pem_x509_certificate(f.read(), default_backend())
-            out = base.Lints["e_ext_cert_policy_error"].Execute(cert)
+            out = base.Lints["e_ext_cert_policy_valid"].Execute(cert)
             self.assertEqual(base.LintStatus.Error,out.Status)
         
     def test_CertPolicyParsed(self):
@@ -23,7 +23,7 @@ class TestCertPolicyError(unittest.TestCase):
         lint_ext_cert_policy_error.init()
         with open(certPath, "rb") as f:
             cert = x509.load_pem_x509_certificate(f.read(), default_backend())
-            out = base.Lints["e_ext_cert_policy_error"].Execute(cert)
+            out = base.Lints["e_ext_cert_policy_valid"].Execute(cert)
             self.assertEqual(base.LintStatus.Pass,out.Status)
 
 if __name__=="__main__":

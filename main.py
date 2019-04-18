@@ -1,20 +1,23 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 import os
+dir = os.path.dirname(os.path.realpath(__file__))
+import sys
+sys.path.append(dir)
 import pkgutil
 from importlib import import_module
 import getopt
-import sys
-import zlint
+
 from lints import base
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 import json
+from util import crl,zlint
 
 listLintsJSON = False
 listLintsSchema = False
 prettyprint = False
-formatprint ="pem"
+formatprint =""
 
 
 def Usage():
@@ -28,7 +31,7 @@ def handleOption(argv):
     global prettyprint
     global formatprint
     try:
-        opts, args = getopt.getopt(argv, "jspf:h?", ["format="])
+        opts, args = getopt.getopt(argv, "jsp:f:h?", ["path=","format="])
     except getopt.GetoptError:
         print("please input the right args，or input -h for help，and when inputting -f or --format the you must give one argv of{der,pem }")
         sys.exit(0)
@@ -40,8 +43,8 @@ def handleOption(argv):
             listLintsJSON = True
         elif opt == '-s':
             listLintsSchema = True
-        elif opt == '-p':
-            prettyprint = True
+        elif opt in ('-p',"--path"):
+            prettyprint = arg
         elif opt in ("-f", "--format"):
             if arg in ("pem", "der"):
                 formatprint = arg
@@ -61,17 +64,82 @@ def lint(file,formatprint):
         print("sorry fatal error occured in the certificate!")
         print(f"the error message is : {str(e)} .")
         print("please try another one!")
-    
 
-if __name__ == '__main__':
+def lint_once(file,base):
+        try:
+            cert=x509.load_pem_x509_certificate(file,default_backend())
+            zlintResult=zlint.LintCertificate(cert)
+            print(json.dumps(zlintResult,indent =4,separators=(',', ': '),ensure_ascii=True,default=zlint.ResultSet.Tojson))
+            if(crl.CrlCheck().SplitUrl(cert,base)):
+               print(crl.CrlCheck().SplitUrl(cert,base)) 
+            else:
+                print("the certificate had not been rovacated!")
+        except:
+            try:
+                cert=x509.load_der_x509_certificate(file,default_backend())
+                zlintResult=zlint.LintCertificate(cert)
+                print(json.dumps(zlintResult,indent =4,separators=(',', ': '),ensure_ascii=True,default=zlint.ResultSet.Tojson))
+                if(crl.CrlCheck().SplitUrl(cert,base)):
+                    print(crl.CrlCheck().SplitUrl(cert,base)) 
+                else:
+                    print("the certificate had not been rovacated!")
+            except ValueError as e:
+                print("sorry fatal error occured in the certificate!")
+                print(f"the error message is : {str(e)} .")
+                print("please try another one!")
+
+def check_online(file,base):
+        try:
+            cert=x509.load_pem_x509_certificate(file,default_backend())
+            zlintResult=zlint.LintCertificate(cert)
+            result = json.dumps(zlintResult,indent =4,separators=(',', ': '),ensure_ascii=True,default=zlint.ResultSet.Tojson)
+            result = json.loads(result)
+            if(crl.CrlCheck().SplitUrl(cert,base)):
+                result['revoked'] =True
+                #print(crl.CrlCheck().SplitUrl(cert,base)) 
+            else:
+                result['revoked'] = False 
+                #print("the certificate had not been rovacated!")
+            return result
+        except:
+            try:
+                cert=x509.load_der_x509_certificate(file,default_backend())
+                zlintResult = zlint.LintCertificate(cert)
+                result = json.dumps(zlintResult,indent =4,separators=(',', ': '),ensure_ascii=True,default=zlint.ResultSet.Tojson)
+                result = json.loads(result)
+                if(crl.CrlCheck().SplitUrl(cert,base)):
+                    result['revoked'] =True
+                    #print(crl.CrlCheck().SplitUrl(cert,base)) 
+                else:
+                    result['revoked'] = False 
+                    #print("the certificate had not been rovacated!")
+                return result
+            except ValueError as e:
+                print("sorry fatal error occured in the certificate!")
+                print(f"the error message is : {str(e)} .")
+                print("please try another one!")
+                return None
+
+def init():
     currentdir = os.path.dirname(os.path.realpath(__file__))
-    pkgpath = currentdir+'\lints'
+    if os.name != 'nt':
+        pkgpath = currentdir+'/lints'
+    else:
+        pkgpath = currentdir+'\lints'
     modules = [name for _, name, _ in pkgutil.iter_modules([pkgpath])]
     for module in modules:
         p = import_module(f"lints.{module}", __package__)
         if module=="base":
             continue
-        p.init()
+        p.init()        
+
+def checkIt(cert):
+    currentdir = os.path.dirname(os.path.realpath(__file__))
+    base = currentdir+"\crls\\"
+    return check_online(cert,base)
+init()
+if __name__ == '__main__':
+    
     handleOption(sys.argv[1:])
     
     if listLintsJSON:
@@ -103,3 +171,13 @@ if __name__ == '__main__':
                 print("sorry, cant't load the file! please enter the right path again!")
 
 
+    if prettyprint:
+        filepath = prettyprint
+        if filepath=="0":
+            sys.exit(0)
+        try:
+            with open(filepath,"rb") as f:  #本来是try下面的缩进块 但是得等开发完之后 加上try
+                file = f.read()
+                lint_once(file,currentdir+"\crls\\")
+        except:
+            print("sorry, cant't load the file! please enter the right path again!")

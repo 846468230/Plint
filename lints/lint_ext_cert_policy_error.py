@@ -25,4 +25,4 @@ class ExtCertPolicyError(base.LintInterface):
 
 
 def init():
-    base.RegisterLint(base.Lint("e_ext_cert_policy_error","A certificate can't be parsed error","RFC 5280",base.LintSource.RFC5280,Time.RFC5280Date,ExtCertPolicyError()))
+    base.RegisterLint(base.Lint("e_ext_cert_policy_valid","A certificate can't be parsed error","RFC 5280",base.LintSource.RFC5280,Time.RFC5280Date,ExtCertPolicyError()))

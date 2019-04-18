@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["--format","pem"],
+            "args": ["-p","C:\\Users\\dao\\Desktop\\1.cer"],
         },
         {
             "name": "Python: Remote Attach",
@@ -65,7 +65,8 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "console": "externalTerminal"
+            "console": "externalTerminal",
+            "args": ["--port","8001"],
         }
     ]
 }
