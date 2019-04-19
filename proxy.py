@@ -15,7 +15,7 @@ import threading
 from collections import namedtuple
 import requests
 from bs4 import BeautifulSoup
-url="http://cert.younglights.cn/testcertificate/form"
+url="http://cert.younglights.cn/testcertificate/form"#"http://127.0.0.1:8000/testcertificate/form"#
 
 if os.name != 'nt':
     import resource
